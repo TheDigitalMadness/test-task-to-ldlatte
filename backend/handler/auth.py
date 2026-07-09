@@ -6,7 +6,7 @@ from domain.response.auth import SigninResponse, SignupResponse, BadCredentialsE
 from handler.dependencies import get_auth_service
 from service.auth import AuthService
 
-router = APIRouter(prefix="auth", tags=["Auth"])
+router = APIRouter(prefix="/auth", tags=["Auth"])
 
 @router.post("/signin", response_model=SigninResponse)
 async def signin(data: SigninRequest, service: AuthService = Depends(get_auth_service)):

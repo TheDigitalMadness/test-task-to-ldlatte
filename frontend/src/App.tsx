@@ -28,11 +28,11 @@ const getParticipantIds = (meet: Meet) => meet.meet_users.map((meetUser) => meet
 
 function AuthPage({ onLogin }: { onLogin: (user: AuthUser) => void }) {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [login, setLogin] = useState("anna");
-  const [password, setPassword] = useState("password");
-  const [username, setUsername] = useState("anna");
-  const [firstName, setFirstName] = useState("Анна");
-  const [lastName, setLastName] = useState("Смирнова");
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 

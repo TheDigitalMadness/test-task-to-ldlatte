@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi.encoders import jsonable_encoder
 
 from domain.request.meets import CreateMeetRequest
 from domain.response.meets import MeetResponse, CreateMeetSuccessResponse
@@ -26,10 +27,10 @@ async def create(data: CreateMeetRequest, user: User = Depends(get_user), servic
         meet_date=date
     )
 
-    if type(resp) == CreateMeetSuccessResponse:
+    if isinstance(resp, CreateMeetSuccessResponse):
         return resp
     else:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=resp.model_dump()
+            detail=jsonable_encoder(resp)
         )

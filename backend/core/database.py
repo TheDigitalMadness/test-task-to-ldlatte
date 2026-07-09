@@ -11,7 +11,7 @@ logger = logging.getLogger("app")
 
 def build_db_url(setting: Settings) -> str:
     return (
-        "postgres+asyncpg"
+        "postgresql+asyncpg"
         "://"
         f"{setting.DB_USER}:{setting.DB_PASSWORD}"
         "@"

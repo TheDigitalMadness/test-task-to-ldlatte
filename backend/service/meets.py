@@ -1,8 +1,27 @@
 from datetime import date
 
-from domain.response.meets import MeetResponse, CreateMeetSuccessResponse, CreateMeetErrorResponse
+from domain.response.meets import MeetResponse, MeetUserResponse, CreateMeetSuccessResponse, CreateMeetErrorResponse
+from models.meet import Meet
 from repository.meet import MeetRepository
 from models.user import User
+
+
+def meet_to_response(meet: Meet) -> MeetResponse:
+    return MeetResponse(
+        id=meet.id,
+        topic=meet.topic,
+        date=meet.date,
+        createdBy=meet.createdBy,
+        createdAt=meet.createdAt,
+        meet_users=[
+            MeetUserResponse(
+                id=meet_user.id,
+                meet_id=meet_user.meet_id,
+                user_id=meet_user.user_id
+            )
+            for meet_user in meet.meet_users
+        ]
+    )
 
 
 class MeetsService:
@@ -14,10 +33,7 @@ class MeetsService:
     async def get_all(self) -> list[MeetResponse]:
         meets = await self.meetRepo.get_all()
 
-        resp = [
-            MeetResponse.model_validate(meet)
-            for meet in meets
-        ]
+        resp = [meet_to_response(meet) for meet in meets]
 
         return resp
 
@@ -31,7 +47,7 @@ class MeetsService:
             )
 
             resp = CreateMeetSuccessResponse(
-                meet=MeetResponse.model_validate(meet)
+                meet=meet_to_response(meet)
             )
 
             return resp

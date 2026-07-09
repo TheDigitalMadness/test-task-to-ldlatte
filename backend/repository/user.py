@@ -15,6 +15,7 @@ class UserRepository:
             select(User)
             .where(User.login == login)
         )
+
         return result.scalars().first()
 
     async def get_by_id(self, id: int) -> User | None:
@@ -22,12 +23,14 @@ class UserRepository:
             select(User)
             .where(User.id == id)
         )
+
         return result.scalars().first()
 
     async def get_all(self) -> list[User]:
         result = await self.session.execute(
             select(User)
         )
+
         return list(result.scalars().fetchall())
 
     async def create_user(self, login: str, hash: str, username: str, fullName: str) -> User:

@@ -17,10 +17,13 @@ class AuthService:
 
         token = create_token(user.id)
 
-        resp = SigninResponse.model_validate(user).model_dump()
-        resp["token"] = token
-
-        return SigninResponse(**resp)
+        return SigninResponse(
+            id=user.id,
+            username=user.username,
+            login=user.login,
+            fullName=user.fullName,
+            token=token
+        )
 
     async def signup(self, login: str, password: str, username: str, fullName: str) -> SignupResponse:
         hash = hash_password(password)
@@ -28,7 +31,10 @@ class AuthService:
 
         token = create_token(user.id)
 
-        resp = SignupResponse.model_validate(user).model_dump()
-        resp["token"] = token
-
-        return SignupResponse(**resp)
+        return SignupResponse(
+            id=user.id,
+            username=user.username,
+            login=user.login,
+            fullName=user.fullName,
+            token=token
+        )

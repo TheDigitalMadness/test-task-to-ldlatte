@@ -16,7 +16,7 @@ bearer_scheme = HTTPBearer()
 
 async def get_user(
         credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
-        session: AsyncSession = Depends(get_db)
+        session: AsyncSession = Depends(get_db, use_cache=False)
 ) -> User:
     payload = decode_token(credentials.credentials)
     if not payload:
@@ -35,14 +35,14 @@ async def get_user(
     return user
 
 
-def get_auth_service(session: AsyncSession = Depends(get_db)) -> AuthService:
+def get_auth_service(session: AsyncSession = Depends(get_db, use_cache=False)) -> AuthService:
     userRepo = UserRepository(session)
     return AuthService(userRepo)
 
-def get_users_service(session: AsyncSession = Depends(get_db)) -> UsersService:
+def get_users_service(session: AsyncSession = Depends(get_db, use_cache=False)) -> UsersService:
     userRepo = UserRepository(session)
     return UsersService(userRepo)
 
-def get_meets_service(session: AsyncSession = Depends(get_db)) -> MeetsService:
+def get_meets_service(session: AsyncSession = Depends(get_db, use_cache=False)) -> MeetsService:
     meetRepo = MeetRepository(session)
     return MeetsService(meetRepo)

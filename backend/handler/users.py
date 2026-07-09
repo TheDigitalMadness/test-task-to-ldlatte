@@ -7,6 +7,6 @@ from models.user import User
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
-@router.post("/", response_model=list[UserResponse])
+@router.get("/", response_model=list[UserResponse])
 async def get_all(user: User = Depends(get_user), service: UsersService = Depends(get_users_service)) -> list[UserResponse]:
     return await service.get_all()
