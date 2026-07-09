@@ -1,0 +1,42 @@
+backend:
+    build: ./backend
+    expose:
+      - "8000"
+    environment:
+      - HTTP_PORT=8000
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=registry
+      - DB_PASSWORD=registry
+      - DB_NAME=registry
+      - FILES_PATH=/app/media
+    volumes:
+      - backend-media:/app/media
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - registry-net
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=registry
+      - POSTGRES_PASSWORD=registry
+      - POSTGRES_DB=registry
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U registry -d registry"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - registry-net
+    restart: unless-stopped
+
+
+volumes:
+  backend-media:
+  db-data:

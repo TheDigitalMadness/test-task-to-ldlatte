@@ -1,0 +1,64 @@
+services:
+  gateway:
+    image: nginx:1.27-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./gateway/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - meetings-net
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    expose:
+      - "3000"
+    networks:
+      - meetings-net
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    expose:
+      - "8000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=meetings
+      - DB_PASSWORD=meetings
+      - DB_NAME=meetings
+      - JWT_SECRET=meetings
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - meetings-net
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=meetings
+      - POSTGRES_PASSWORD=meetings
+      - POSTGRES_DB=meetings
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U meetings -d meetings"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - meetings-net
+    restart: unless-stopped
+
+
+networks:
+  meetings-net:
+
+
+volumes:
+  db-data:
