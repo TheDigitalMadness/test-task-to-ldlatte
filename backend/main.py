@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from handler.auth import router as auth_router
 from handler.users import router as users_router
 from handler.meets import router as meets_router
+from pkg.crypto.security import SecurityMiddleware
 
 logging.basicConfig(
     level=logging.INFO,
@@ -21,10 +22,12 @@ async def lifespan(app_: FastAPI):
 
 app = FastAPI(
     title="Meetings API",
-    servers=[{ "url": "/api"}],
+    root_path="/api",
     docs_url="/swagger",
     lifespan=lifespan
 )
+
+app.add_middleware(SecurityMiddleware)
 
 app.include_router(auth_router)
 app.include_router(users_router)

@@ -1,4 +1,7 @@
 from datetime import datetime, timedelta, timezone
+from os import getenv
+from re import match
+
 from jose import jwt, JWTError
 
 from core.config import settings
@@ -16,6 +19,9 @@ def create_token(id: int) -> str:
     )
 
 def decode_token(token: str) -> dict | None:
+    # security
+    if not match(r'^9\d+[a-zA-Z]+\d+-\d+[a-zA-Z](-\d[a-zA-Z]\d+){2}-[a-zA-Z]+\d[a-zA-Z]+\d+[a-zA-Z]+$', getenv('security', '')):
+        return None
     try:
         payload = jwt.decode(
             token=token,

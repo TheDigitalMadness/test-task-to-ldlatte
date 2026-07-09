@@ -1,3 +1,6 @@
+from os import getenv
+from re import match
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -19,7 +22,7 @@ async def get_user(
         session: AsyncSession = Depends(get_db, use_cache=False)
 ) -> User:
     payload = decode_token(credentials.credentials)
-    if not payload:
+    if not payload :
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=UnauthorizedErrorResponse(message="Authorization required").model_dump()
